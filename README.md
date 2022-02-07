@@ -12,10 +12,10 @@ $ git clone https://github.com/rogerio-ozarias/dialog-test-api/
 # para baixar a APP React
 $ git clone https://github.com/rogerio-ozarias/dialog-test-app/
 
-# Startar o servidor da aplicação porta 4000
+# Startar o servidor da aplicação porta 3000
 $ yarn start
 
-# Startar o servidor web porta 3000
+# Startar o servidor web porta 4000
 $ yarn start
 
 # Chamadas da API
