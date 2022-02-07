@@ -1,9 +1,24 @@
-# dialog-test-api
+# dialog-pwa-test
 
-# Startar o servidor
+O sistema esta dividito em 2 pastas API e APP:
+
+API é onde esta rodando o servior Web
+
+APP é onde esta rodando a applicação em React
+
+# para baixar a API
+$ git clone https://github.com/rogerio-ozarias/dialog-test-api/
+
+# para baixar a APP React
+$ git clone https://github.com/rogerio-ozarias/dialog-test-app/
+
+# Startar o servidor da aplicação porta 4000
 $ yarn start
 
-# Chamada da API
+# Startar o servidor web porta 3000
+$ yarn start
+
+# Chamadas da API
 POST http://localhost:4000/
 
 # Buscar todos os usuários
