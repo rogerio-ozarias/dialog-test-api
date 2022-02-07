@@ -1,59 +1,76 @@
 const { gql, ApolloServer } = require("apollo-server");
-//CREATE FAKE DATABASE
-let books = [];
-//DEFINE TYPES
+
+let users = require('../database/db.json');
+
+const PORT= 4000;
+
+//Types
 const typeDefs = gql`
-  type Book {
-    id: ID!
-    title: String
-    author: String
-    publishedAt: Int
+  type Friends {
+    _id: String!
+    index: Int
+    picture: String
+    age: Int
+    eyeColor: String
+    name: String
+    company: String
+    email: String
+    phone: String
+  }
+
+  type User {
+    _id: String!
+    index: Int
+    picture: String
+    age: Int
+    eyeColor: String
+    name: String
+    company: String
+    email: String
+    phone: String
+    friends: [Friends]
   }
 
   type Query {
-    books: [Book]
-    book(id: ID!): Book
+    list(name: String): [User]
+    user(_id: String!): User
   }
 
   type Mutation {
-    create(id: ID!, title: String!, author: String!, publishedAt: Int!): Book
-    delete(id: ID!): Boolean
-    update(id: ID!, title: String, author: String, publishedAt: Int): Book
+    create(_id: String!, name: String!, email: String!, phone: String!): User
+    delete(_id: String!): Boolean
+    update(_id: String!, name: String!, email: String!, phone: String!): User
   }
 `;
-//DEFINE RESOLVERS
+
+//Resolvers
 const resolvers = {
   Query: {
-    books: () => {
-      return books;
+    list: (_, { name }) => {
+      if(!name) 
+        return users;            
+      
+      query = '('+name.replaceAll(' ', ')[\\ ]*[\ a-z]*(')+')';
+      query = query.toLowerCase();
+      const regex = new RegExp(query);
+      return users.filter(e => regex.test(e.name.toLowerCase()));
+
     },
-    book: (_, { id }) => {
-      return books.find((book) => book.id === id);
+    user: (_, { _id }) => {
+      return users.find((user) => user._id === _id);
     },
-  },
-  Mutation: {
-    create: (_, { id, title, author, publishedAt }) => {
-      const book = { id, title, author, publishedAt };
-      books.push(book);
-      return book;
-    },
-    delete: (_, { id }) => {
-      const filteredBooks = books.filter((book) => book.id !== id);
-      books = filteredBooks;
-      return true;
-    },
-    update: (_, { id, title, author, publishedAt }) => {
-      const book = books.find((book) => book.id === id);
-      book.id = book.id;
-      book.title = title ? title : book.title;
-      book.author = author ? author : book.author;
-      book.publishedAt = publishedAt ? publishedAt : book.publishedAt;
-      return book;
-    },
-  },
+  }  
 };
 
-//CREATE SERVER
-const app = new ApolloServer({ typeDefs, resolvers });
-//RUN SERVER
-app.listen().then(({ url }) => console.log(`Server running on ${url}`));
+const app = new ApolloServer({
+  typeDefs, 
+  resolvers,
+  context: params => {
+      console.log(params.req.body.query);
+      console.log(params.req.body.variables);
+  }
+});  
+
+app.listen(PORT).then(
+    ({url}) => console.log(`Server running on ${url}`)
+);
